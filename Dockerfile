@@ -10,8 +10,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libzip-dev \
         unzip \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install dom \
     && docker-php-ext-install -j"$(nproc)" \
-        bcmath dom gd mbstring pdo_pgsql simplexml xml xmlreader xmlwriter zip \
+        bcmath gd mbstring pdo_pgsql simplexml xml xmlreader xmlwriter zip \
     && a2enmod rewrite headers \
     && rm -rf /var/lib/apt/lists/*
 
