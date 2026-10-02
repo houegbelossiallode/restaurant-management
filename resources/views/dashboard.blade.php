@@ -10,7 +10,7 @@
             <h1 class="text-2xl font-bold text-slate-800 mb-2">Tableau de Bord</h1>
             <p class="text-slate-500 text-sm">Vue d'ensemble de votre restaurant</p>
         </div>
-        <div class="flex items-center space-x-3">
+        <div class="flex flex-wrap items-center gap-2">
             <a href="{{ route('distributions.create') }}" class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg hover:shadow-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 font-medium text-sm">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
@@ -27,7 +27,7 @@
     </div>
 
     <!-- Statistiques globales -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:gap-6 xl:grid-cols-3">
         <div class="bg-white shadow-xl border border-slate-100 p-4 hover:shadow-2xl transition-all duration-300">
             <div class="flex items-center justify-between mb-4">
                 <div>
@@ -98,7 +98,7 @@
 
     <!-- Liste des serveuses -->
     <div class="bg-white shadow-2xl border border-slate-200 overflow-hidden">
-        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-4 border-b border-slate-200">
+        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 px-4 py-4 border-b border-slate-200 sm:px-6">
             <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-3">
                     <div class="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg">
@@ -117,7 +117,7 @@
             </div>
         </div>
         <div class="overflow-x-auto">
-            <table class="w-full">
+            <table class="w-full min-w-[600px]">
                 <thead class="bg-slate-100">
                     <tr>
                         <th class="px-6 py-4 text-left text-xs font-bold text-slate-700 uppercase tracking-wider border-b-2 border-slate-300">Serveuse</th>

@@ -5,11 +5,11 @@
 @section('content')
 <div class="w-full">
     <div class="mb-8">
-        <h1 class="text-3xl font-bold text-slate-800 mb-2">Enregistrer des Paiements</h1>
+        <h1 class="text-2xl font-bold text-slate-800 mb-2 sm:text-3xl">Enregistrer des Paiements</h1>
         <p class="text-slate-500">Enregistrez plusieurs paiements effectués par une serveuse en une seule fois</p>
     </div>
 
-    <div class="bg-white shadow-xl border border-slate-100 p-8">
+    <div class="bg-white shadow-xl border border-slate-100 p-4 sm:p-6 lg:p-8">
         <form action="{{ route('paiements.store') }}" method="POST" id="paiementForm" class="space-y-6">
             @csrf
             @if ($errors->any())
@@ -44,7 +44,7 @@
             </div>
 
             <div class="border-t border-slate-200 pt-6">
-                <div class="flex items-center justify-between mb-4">
+                <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <h2 class="text-lg font-semibold text-slate-800">Détails des paiements</h2>
                     <button type="button" onclick="addPaiementRow()" class="inline-flex items-center px-4 py-2 bg-emerald-600 text-white hover:bg-emerald-700 transition-colors text-sm font-medium">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -73,7 +73,7 @@
                 </div>
             </div>
 
-            <div class="flex space-x-4 pt-4">
+            <div class="flex flex-col-reverse gap-3 pt-4 sm:flex-row">
                 <button type="submit" class="flex-1 bg-gradient-to-r from-emerald-600 to-teal-600 text-white py-3 font-semibold hover:from-emerald-700 hover:to-teal-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
                     Enregistrer tous les paiements
                 </button>
@@ -103,7 +103,7 @@
                     </svg>
                 </button>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 <div>
                     <label class="block text-slate-700 text-xs font-semibold mb-1">Boisson</label>
                     <div class="relative">

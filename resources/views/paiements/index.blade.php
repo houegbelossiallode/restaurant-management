@@ -9,14 +9,14 @@
             <h1 class="text-3xl font-bold text-slate-800 mb-2">Historique des Paiements</h1>
             <p class="text-slate-500">Consultez et exportez l'historique des paiements</p>
         </div>
-        <div class="flex items-center space-x-3">
-            <a href="{{ route('paiements.export.excel', request()->all()) }}" class="inline-flex items-center px-4 py-2 bg-green-600 text-white hover:bg-green-700 transition-colors text-sm font-medium">
+        <div class="flex flex-wrap items-center gap-2">
+            <a href="{{ route('paiements.export.excel', request()->all()) }}" class="inline-flex items-center px-3 py-2 bg-green-600 text-white hover:bg-green-700 transition-colors text-sm font-medium sm:px-4">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                 </svg>
                 Export Excel
             </a>
-            <a href="{{ route('paiements.export.pdf', request()->all()) }}" class="inline-flex items-center px-4 py-2 bg-red-600 text-white hover:bg-red-700 transition-colors text-sm font-medium">
+            <a href="{{ route('paiements.export.pdf', request()->all()) }}" class="inline-flex items-center px-3 py-2 bg-red-600 text-white hover:bg-red-700 transition-colors text-sm font-medium sm:px-4">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                 </svg>
@@ -47,12 +47,12 @@
                 <label class="block text-slate-700 text-sm font-semibold mb-2">Date de fin</label>
                 <input type="date" name="date_fin" value="{{ request('date_fin') }}" class="w-full px-4 py-3 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
             </div>
-            <div class="flex items-end">
-                <button type="submit" class="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-lg">
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-end">
+                <button type="submit" class="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-lg sm:w-auto">
                     Rechercher
                 </button>
                 @if(request('search') || request('date_debut') || request('date_fin'))
-                    <a href="{{ route('paiements.index') }}" class="ml-3 px-6 py-3 bg-slate-100 text-slate-700 font-semibold hover:bg-slate-200 transition-all duration-300">
+                    <a href="{{ route('paiements.index') }}" class="w-full px-6 py-3 bg-slate-100 text-center text-slate-700 font-semibold hover:bg-slate-200 transition-all duration-300 sm:w-auto">
                         Réinitialiser
                     </a>
                 @endif
@@ -66,7 +66,7 @@
             <h2 class="text-lg font-bold text-slate-800">Liste des Paiements</h2>
         </div>
         <div class="overflow-x-auto">
-            <table class="w-full">
+            <table class="w-full min-w-[640px]">
                 <thead class="bg-slate-100">
                     <tr>
                         <th class="px-6 py-4 text-left text-xs font-bold text-slate-700 uppercase tracking-wider border-b-2 border-slate-300">Date</th>

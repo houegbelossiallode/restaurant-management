@@ -5,11 +5,11 @@
 @section('content')
 <div class="max-w-2xl mx-auto space-y-8">
     <div>
-        <h1 class="text-3xl font-bold text-slate-800 mb-2">Modifier {{ $serveuse->nom }}</h1>
+        <h1 class="break-words text-2xl font-bold text-slate-800 mb-2 sm:text-3xl">Modifier {{ $serveuse->nom }}</h1>
         <p class="text-slate-500">Mettez à jour les informations de la serveuse</p>
     </div>
 
-    <div class="bg-white shadow-xl border border-slate-100 p-8">
+    <div class="bg-white shadow-xl border border-slate-100 p-4 sm:p-6 lg:p-8">
         <form action="{{ route('serveuses.update', $serveuse->id) }}" method="POST">
             @csrf
             @method('PUT')
@@ -27,7 +27,7 @@
                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                 @enderror
             </div>
-            <div class="flex space-x-4">
+            <div class="flex flex-col-reverse gap-3 sm:flex-row">
                 <button type="submit" class="flex-1 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-lg">
                     Modifier
                 </button>

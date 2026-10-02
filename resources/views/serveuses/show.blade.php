@@ -11,7 +11,7 @@
                 <span class="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">{{ substr($serveuse->nom, 0, 1) }}</span>
             </div>
             <div class="text-white text-center sm:text-left flex-1">
-                <h1 class="text-3xl font-bold mb-2">{{ $serveuse->nom }}</h1>
+                <h1 class="break-words text-2xl font-bold mb-2 sm:text-3xl">{{ $serveuse->nom }}</h1>
                 <p class="text-blue-100 flex items-center justify-center sm:justify-start gap-2">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
@@ -29,7 +29,7 @@
     </div>
 
     <!-- Cartes de statistiques -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:gap-6 xl:grid-cols-3">
         <div class="bg-white shadow-xl border border-slate-100 p-6">
             <div class="flex items-center justify-between mb-4">
                 <div>
@@ -83,7 +83,7 @@
             <h2 class="text-lg font-bold text-slate-800">Historique des Distributions</h2>
         </div>
         <div class="overflow-x-auto">
-            <table class="w-full">
+            <table class="w-full min-w-[640px]">
                 <thead class="bg-slate-100">
                     <tr>
                         <th class="px-6 py-4 text-left text-xs font-bold text-slate-700 uppercase tracking-wider border-b-2 border-slate-300">Date</th>
@@ -127,7 +127,7 @@
             <h2 class="text-lg font-bold text-slate-800">Historique des Paiements</h2>
         </div>
         <div class="overflow-x-auto">
-            <table class="w-full">
+            <table class="w-full min-w-[560px]">
                 <thead class="bg-slate-100">
                     <tr>
                         <th class="px-6 py-4 text-left text-xs font-bold text-slate-700 uppercase tracking-wider border-b-2 border-slate-300">Date</th>

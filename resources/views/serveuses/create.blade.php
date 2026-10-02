@@ -50,7 +50,7 @@
                     </p>
                 @enderror
             </div>
-            <div class="flex space-x-4 pt-4">
+            <div class="flex flex-col-reverse gap-3 pt-4 sm:flex-row">
                 <button type="submit" class="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 rounded-xl font-semibold hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
                     Enregistrer
                 </button>

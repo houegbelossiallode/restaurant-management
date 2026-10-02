@@ -9,7 +9,7 @@
             <h1 class="text-3xl font-bold text-slate-800 mb-2">Serveuses</h1>
             <p class="text-slate-500">Gérez vos serveuses et suivez leurs soldes</p>
         </div>
-        <button onclick="openModal()" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg hover:shadow-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 font-medium">
+        <button onclick="openModal()" class="inline-flex w-full items-center justify-center px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg hover:shadow-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 font-medium sm:w-auto">
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
             </svg>
@@ -18,7 +18,7 @@
     </div>
 
     <!-- Stats Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:gap-6 xl:grid-cols-3">
         <div class="bg-white shadow-xl border border-slate-100 p-4 hover:shadow-2xl transition-all duration-300">
             <div class="flex items-center justify-between mb-4">
                 <div>
@@ -197,9 +197,9 @@
     </div> --}}
 
     <!-- Modal -->
-    <div id="serveuseModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50">
-        <div class="bg-white shadow-2xl w-full max-w-lg mx-4 transform transition-all">
-            <div class="flex items-center justify-between p-6 border-b border-slate-200">
+    <div id="serveuseModal" class="fixed inset-0 hidden items-center justify-center overflow-y-auto bg-black/50 p-4 backdrop-blur-sm z-50">
+        <div class="my-auto max-h-[calc(100dvh-2rem)] w-full max-w-lg overflow-y-auto bg-white shadow-2xl">
+            <div class="sticky top-0 flex items-center justify-between border-b border-slate-200 bg-white p-4 sm:p-6">
                 <h3 id="modalTitle" class="text-xl font-bold text-slate-800">Ajouter une Serveuse</h3>
                 <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -207,7 +207,7 @@
                     </svg>
                 </button>
             </div>
-            <form id="serveuseForm" action="{{ route('serveuses.store') }}" method="POST" class="p-6 space-y-6">
+            <form id="serveuseForm" action="{{ route('serveuses.store') }}" method="POST" class="space-y-6 p-4 sm:p-6">
                 @csrf
                 <input type="hidden" id="serveuseId" name="id" value="">
                 <div id="methodField"></div>
@@ -219,7 +219,7 @@
                     <label class="block text-slate-700 text-sm font-semibold mb-2">Téléphone (optionnel)</label>
                     <input type="text" id="telephone" name="telephone" class="w-full px-4 py-3 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" placeholder="Entrez le numéro de téléphone">
                 </div>
-                <div class="flex space-x-4 pt-4">
+                <div class="flex flex-col-reverse gap-3 pt-4 sm:flex-row">
                     <button type="submit" class="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 font-semibold hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
                         Enregistrer
                     </button>

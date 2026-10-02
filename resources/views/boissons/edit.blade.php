@@ -6,7 +6,7 @@
 <div class="max-w-2xl mx-auto">
     <h1 class="text-3xl font-bold text-gray-800 mb-6">Modifier {{ $boisson->nom }}</h1>
     
-    <div class="bg-white p-6 rounded-lg shadow-md">
+    <div class="bg-white p-4 rounded-lg shadow-md sm:p-6">
         <form action="{{ route('boissons.update', $boisson->id) }}" method="POST">
             @csrf
             @method('PUT')
@@ -31,7 +31,7 @@
                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                 @enderror
             </div>
-            <div class="flex space-x-4">
+            <div class="flex flex-col-reverse gap-3 sm:flex-row">
                 <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">Modifier</button>
                 <a href="{{ route('boissons.index') }}" class="bg-gray-300 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-400 transition">Annuler</a>
             </div>

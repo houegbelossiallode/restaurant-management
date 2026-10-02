@@ -5,11 +5,11 @@
 @section('content')
 <div class="w-full">
     <div class="mb-8">
-        <h1 class="text-3xl font-bold text-slate-800 mb-2">Enregistrer des Distributions</h1>
+        <h1 class="text-2xl font-bold text-slate-800 mb-2 sm:text-3xl">Enregistrer des Distributions</h1>
         <p class="text-slate-500">Distribuez plusieurs boissons à une serveuse en une seule fois</p>
     </div>
 
-    <div class="bg-white shadow-xl border border-slate-100 p-8">
+    <div class="bg-white shadow-xl border border-slate-100 p-4 sm:p-6 lg:p-8">
         <form action="{{ route('distributions.store') }}" method="POST" id="distributionForm" class="space-y-6">
             @csrf
             @if ($errors->any())
@@ -44,7 +44,7 @@
             </div>
 
             <div class="border-t border-slate-200 pt-6">
-                <div class="flex items-center justify-between mb-4">
+                <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <h2 class="text-lg font-semibold text-slate-800">Détails des distributions</h2>
                     <button type="button" onclick="addDistributionRow()" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 transition-colors text-sm font-medium">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -73,7 +73,7 @@
                 </div>
             </div>
 
-            <div class="flex space-x-4 pt-4">
+            <div class="flex flex-col-reverse gap-3 pt-4 sm:flex-row">
                 <button type="submit" class="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 font-semibold hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
                     Enregistrer toutes les distributions
                 </button>

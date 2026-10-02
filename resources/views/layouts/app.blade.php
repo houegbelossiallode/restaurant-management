@@ -14,7 +14,7 @@
     @auth
         <div class="flex min-h-screen">
             <!-- Sidebar -->
-            <aside class="w-64 bg-white/80 backdrop-blur-lg shadow-xl border-r border-slate-200 fixed h-full z-50">
+            <aside id="appSidebar" class="fixed inset-y-0 left-0 z-50 flex w-64 max-w-[85vw] -translate-x-full flex-col border-r border-slate-200 bg-white/95 shadow-xl backdrop-blur-lg transition-transform duration-200 lg:translate-x-0">
                 <div class="p-6 border-b border-slate-200">
                     <div class="flex items-center space-x-3">
                         <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
@@ -26,7 +26,7 @@
                     </div>
                 </div>
 
-                <nav class="p-4 space-y-2">
+                <nav class="flex-1 space-y-2 overflow-y-auto p-4">
                     <a href="{{ route('dashboard') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-slate-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
@@ -53,7 +53,7 @@
                     </a>
                 </nav>
 
-                <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-slate-200">
+                <div class="mt-auto border-t border-slate-200 p-4">
                     <form action="{{ route('logout') }}" method="POST">
                         @csrf
                         <button type="submit" class="flex items-center space-x-3 w-full px-4 py-3 rounded-xl text-slate-600 hover:text-red-600 hover:bg-red-50 transition-all duration-200 font-medium">
@@ -65,23 +65,29 @@
                     </form>
                 </div>
             </aside>
+            <button id="sidebarBackdrop" type="button" aria-label="Fermer le menu" class="fixed inset-0 z-40 hidden bg-slate-950/40 lg:hidden"></button>
 
             <!-- Main Content -->
-            <div class="flex-1 flex flex-col ml-64">
+            <div class="ml-0 flex min-w-0 flex-1 flex-col lg:ml-64">
                 <!-- Header -->
-                <header class="bg-white/80 backdrop-blur-lg shadow-sm border-b border-slate-200 px-8 py-4 sticky top-0 z-40">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center space-x-3">
+                <header class="sticky top-0 z-30 border-b border-slate-200 bg-white/90 px-4 py-3 shadow-sm backdrop-blur-lg sm:px-6 lg:px-8 lg:py-4">
+                    <div class="flex min-w-0 items-center justify-between gap-3">
+                        <div class="flex min-w-0 items-center gap-3">
+                            <button id="sidebarToggle" type="button" aria-label="Ouvrir le menu" aria-expanded="false" class="inline-flex h-10 w-10 shrink-0 items-center justify-center text-slate-600 hover:bg-slate-100 lg:hidden">
+                                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                                </svg>
+                            </button>
                             <div class="w-8 h-8 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center shadow">
                                 <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
                                 </svg>
                             </div>
-                            <span class="font-semibold text-slate-800">@yield('title', 'Restaurant Manager')</span>
+                            <span class="truncate font-semibold text-slate-800">@yield('title', 'Restaurant Manager')</span>
                         </div>
-                        <div class="flex items-center space-x-4">
+                        <div class="flex shrink-0 items-center gap-2 sm:gap-4">
                             <!-- Search Bar -->
-                            <div class="relative flex-1 max-w-2xl">
+                            <div class="relative hidden w-full max-w-2xl flex-1 md:block">
                                 <input type="text" placeholder="Rechercher..." class="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                     <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -121,7 +127,7 @@
                     </div>
                 </header>
 
-                <main class="flex-1 p-8">
+                <main class="min-w-0 flex-1 p-4 sm:p-6 lg:p-8">
                     @yield('content')
                 </main>
             </div>
@@ -130,6 +136,29 @@
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+        const appSidebar = document.getElementById('appSidebar');
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+
+        function setSidebarOpen(isOpen) {
+            if (!appSidebar || !sidebarBackdrop || !sidebarToggle) return;
+
+            appSidebar.classList.toggle('-translate-x-full', !isOpen);
+            sidebarBackdrop.classList.toggle('hidden', !isOpen);
+            sidebarToggle.setAttribute('aria-expanded', String(isOpen));
+        }
+
+        sidebarToggle?.addEventListener('click', () => {
+            setSidebarOpen(sidebarToggle.getAttribute('aria-expanded') !== 'true');
+        });
+        sidebarBackdrop?.addEventListener('click', () => setSidebarOpen(false));
+        appSidebar?.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => setSidebarOpen(false));
+        });
+        document.addEventListener('keydown', event => {
+            if (event.key === 'Escape') setSidebarOpen(false);
+        });
+
         function toggleProfileDropdown() {
             const dropdown = document.getElementById('profileDropdown');
             if (dropdown) {
