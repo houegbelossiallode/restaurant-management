@@ -18,9 +18,9 @@ services:
       - key: DB_CONNECTION
         value: pgsql
       - key: DB_URL
-        fromDatabase:
-          name: restaurant-management-db
-          property: connectionString
+        sync: false
+      - key: DB_SSLMODE
+        value: require
       - key: SESSION_DRIVER
         value: database
       - key: CACHE_STORE
@@ -33,9 +33,3 @@ services:
         sync: false
       - key: ADMIN_PASSWORD
         sync: false
-
-databases:
-  - name: restaurant-management-db
-    databaseName: restaurant_management
-    user: restaurant_management
-    plan: free
