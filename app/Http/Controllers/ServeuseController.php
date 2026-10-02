@@ -62,9 +62,18 @@ class ServeuseController extends Controller
     {
         $query = $request->get('q');
         $serveuses = Serveuse::where('nom', 'like', '%' . $query . '%')
-            ->select('id', 'nom', 'solde')
+            ->select('id', 'nom')
+            ->withSum('distributions', 'montant_total')
+            ->withSum('paiements', 'montant')
             ->limit(10)
-            ->get();
+            ->get()
+            ->map(fn (Serveuse $serveuse) => [
+                'id' => $serveuse->id,
+                'nom' => $serveuse->nom,
+                'solde' => (float) ($serveuse->distributions_sum_montant_total ?? 0)
+                    - (float) ($serveuse->paiements_sum_montant ?? 0),
+            ]);
+
         return response()->json($serveuses);
     }
 }
