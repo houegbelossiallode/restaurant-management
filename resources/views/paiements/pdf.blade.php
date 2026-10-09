@@ -112,6 +112,7 @@
                     <th>Serveuse</th>
                     <th>Boisson</th>
                     <th>Quantité</th>
+                    <th>Prix unitaire (FCFA)</th>
                     <th>Montant (FCFA)</th>
                 </tr>
             </thead>
@@ -122,6 +123,7 @@
                         <td>{{ $paiement->serveuse->nom }}</td>
                         <td>{{ $paiement->boisson->nom }}</td>
                         <td>{{ $paiement->quantite }}</td>
+                        <td>{{ number_format($paiement->boisson->prix, 0) }}</td>
                         <td>{{ number_format($paiement->montant, 0) }}</td>
                     </tr>
                 @endforeach

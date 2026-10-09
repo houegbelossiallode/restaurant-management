@@ -1,0 +1,68 @@
+<?php
+
+namespace App\Observers;
+
+use App\Models\Role;
+use App\Models\Sousmenu;
+use Illuminate\Support\Facades\DB;
+
+class RoleObserver
+{
+    /**
+     * Handle the Role "created" event.
+     */
+    public function created(Role $role): void
+    {
+         // Récupérer tous les sous-menus existants
+         $sousmenus = Sousmenu::all();
+         foreach ($sousmenus as $sousmenu) {
+             $exists = DB::table('role_permissions')
+                 ->where('sous_menu_id', $sousmenu->id)
+                 ->where('role_id', $role->id)
+                 ->exists();
+
+             if (!$exists) {
+                 DB::table('role_permissions')->insert([
+                     'sous_menu_id' => $sousmenu->id,
+                     'role_id'     => $role->id,
+                     'is_granted'  => false,
+                     'actif'       => 'OUI',
+                     'created_at'  => now(),
+                     'updated_at'  => now(),
+                 ]);
+             }
+         }
+    }
+
+    /**
+     * Handle the Role "updated" event.
+     */
+    public function updated(Role $role): void
+    {
+        //
+    }
+
+    /**
+     * Handle the Role "deleted" event.
+     */
+    public function deleted(Role $role): void
+    {
+        //
+    }
+
+    /**
+     * Handle the Role "restored" event.
+     */
+    public function restored(Role $role): void
+    {
+        //
+    }
+
+    /**
+     * Handle the Role "force deleted" event.
+     */
+    public function forceDeleted(Role $role): void
+    {
+        //
+    }
+}

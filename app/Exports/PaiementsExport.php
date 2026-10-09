@@ -54,6 +54,7 @@ class PaiementsExport implements FromCollection, WithHeadings, WithStyles, WithC
                 'serveuse' => $paiement->serveuse->nom,
                 'boisson' => $paiement->boisson->nom,
                 'quantite' => $paiement->quantite,
+                'prix_unitaire' => $paiement->boisson->prix,
                 'montant' => $paiement->montant,
             ];
         });
@@ -66,6 +67,7 @@ class PaiementsExport implements FromCollection, WithHeadings, WithStyles, WithC
             'Serveuse',
             'Boisson',
             'Quantité',
+            'Prix unitaire (FCFA)',
             'Montant (FCFA)',
         ];
     }
@@ -99,6 +101,7 @@ class PaiementsExport implements FromCollection, WithHeadings, WithStyles, WithC
             'C' => 25,
             'D' => 12,
             'E' => 18,
+            'F' => 18,
         ];
     }
 
@@ -112,9 +115,9 @@ class PaiementsExport implements FromCollection, WithHeadings, WithStyles, WithC
         return [
             AfterSheet::class => function(AfterSheet $event) {
                 $sheet = $event->sheet->getDelegate();
-                
+
                 // Titre principal
-                $sheet->mergeCells('A1:E1');
+                $sheet->mergeCells('A1:F1');
                 $sheet->setCellValue('A1', 'RAPPORT DES PAIEMENTS');
                 $sheet->getStyle('A1')->applyFromArray([
                     'font' => [
@@ -127,9 +130,9 @@ class PaiementsExport implements FromCollection, WithHeadings, WithStyles, WithC
                         'vertical' => Alignment::VERTICAL_CENTER,
                     ],
                 ]);
-                
+
                 // Date de génération
-                $sheet->mergeCells('A2:E2');
+                $sheet->mergeCells('A2:F2');
                 $sheet->setCellValue('A2', 'Généré le: ' . now()->format('d/m/Y à H:i'));
                 $sheet->getStyle('A2')->applyFromArray([
                     'font' => [
@@ -141,7 +144,7 @@ class PaiementsExport implements FromCollection, WithHeadings, WithStyles, WithC
                         'vertical' => Alignment::VERTICAL_CENTER,
                     ],
                 ]);
-                
+
                 // Informations de filtre
                 $filterInfo = 'Filtres: ';
                 if ($this->search) {
@@ -156,8 +159,8 @@ class PaiementsExport implements FromCollection, WithHeadings, WithStyles, WithC
                 if (!$this->search && !$this->dateDebut && !$this->dateFin) {
                     $filterInfo = 'Tous les paiements';
                 }
-                
-                $sheet->mergeCells('A3:E3');
+
+                $sheet->mergeCells('A3:F3');
                 $sheet->setCellValue('A3', $filterInfo);
                 $sheet->getStyle('A3')->applyFromArray([
                     'font' => [
@@ -170,9 +173,9 @@ class PaiementsExport implements FromCollection, WithHeadings, WithStyles, WithC
                         'vertical' => Alignment::VERTICAL_CENTER,
                     ],
                 ]);
-                
+
                 // Style des en-têtes de colonnes
-                $sheet->getStyle('A4:E4')->applyFromArray([
+                $sheet->getStyle('A4:F4')->applyFromArray([
                     'font' => [
                         'bold' => true,
                         'size' => 12,
@@ -193,7 +196,7 @@ class PaiementsExport implements FromCollection, WithHeadings, WithStyles, WithC
                         ],
                     ],
                 ]);
-                
+
                 // Ajuster la hauteur des lignes d'entête
                 $sheet->getRowDimension(1)->setRowHeight(30);
                 $sheet->getRowDimension(2)->setRowHeight(20);

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Serveuse;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class ServeuseController extends Controller
 {
@@ -75,5 +76,16 @@ class ServeuseController extends Controller
             ]);
 
         return response()->json($serveuses);
+    }
+
+    public function dettes()
+    {
+        $serveuses = Serveuse::with(['distributions' => function($q) {
+            $q->with('boisson')->orderBy('date_distribution', 'desc');
+        }, 'paiements' => function($q) {
+            $q->with('boisson')->orderBy('date_paiement', 'desc');
+        }])->get();
+
+        return view('serveuses.dettes', compact('serveuses'));
     }
 }

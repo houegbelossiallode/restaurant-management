@@ -2,11 +2,18 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\ServeuseController;
+use App\Http\Controllers\MenuController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\ModuleController;
 use App\Http\Controllers\BoissonController;
-use App\Http\Controllers\DistributionController;
 use App\Http\Controllers\PaiementController;
+use App\Http\Controllers\ServeuseController;
+use App\Http\Controllers\SousmenuController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\StatistiqueController;
+use App\Http\Controllers\DistributionController;
+use App\Http\Controllers\RolePermissionController;
 
 // Routes publiques
 Route::get('/', function () {
@@ -31,6 +38,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/{serveuse}/edit', [ServeuseController::class, 'edit'])->name('edit');
         Route::put('/{serveuse}', [ServeuseController::class, 'update'])->name('update');
         Route::delete('/{serveuse}', [ServeuseController::class, 'destroy'])->name('destroy');
+        Route::get('/dettes', [ServeuseController::class, 'dettes'])->name('dettes');
     });
 
     // Routes pour les boissons
@@ -62,5 +70,56 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('api')->name('api.')->group(function () {
         Route::get('/serveuses/search', [ServeuseController::class, 'search'])->name('serveuses.search');
         Route::get('/boissons/search', [BoissonController::class, 'search'])->name('boissons.search');
+    });
+
+    // Routes pour les modules
+    Route::prefix('modules')->name('modules.')->group(function () {
+        Route::get('/', [ModuleController::class, 'index'])->name('index');
+        Route::post('/', [ModuleController::class, 'store'])->name('store');
+        Route::put('/{id}', [ModuleController::class, 'update'])->name('update');
+        Route::delete('/{module}', [ModuleController::class, 'destroy'])->name('destroy');
+    });
+
+    // Routes pour les menus
+    Route::prefix('menus')->name('menus.')->group(function () {
+        Route::get('/', [MenuController::class, 'index'])->name('index');
+        Route::post('/', [MenuController::class, 'store'])->name('store');
+        Route::put('/{id}', [MenuController::class, 'update'])->name('update');
+        Route::delete('/{menu}', [MenuController::class, 'destroy'])->name('destroy');
+    });
+
+    // Routes pour les sous-menus
+    Route::prefix('sousmenus')->name('sousmenus.')->group(function () {
+        Route::get('/', [SousmenuController::class, 'index'])->name('index');
+        Route::post('/', [SousmenuController::class, 'store'])->name('store');
+        Route::put('/{id}', [SousmenuController::class, 'update'])->name('update');
+        Route::delete('/{sousmenu}', [SousmenuController::class, 'destroy'])->name('destroy');
+    });
+
+    // Routes pour les rôles
+    Route::prefix('roles')->name('roles.')->group(function () {
+        Route::get('/', [RoleController::class, 'index'])->name('index');
+        Route::post('/', [RoleController::class, 'store'])->name('store');
+        Route::put('/{id}', [RoleController::class, 'update'])->name('update');
+        Route::delete('/{role}', [RoleController::class, 'destroy'])->name('destroy');
+    });
+
+    // Routes pour les permissions de rôles
+    Route::prefix('roles/permissions')->name('roles.permissions.')->group(function () {
+        Route::get('/', [RolePermissionController::class, 'index'])->name('index');
+        Route::put('/{permission}', [RolePermissionController::class, 'update'])->name('update');
+    });
+
+    // Routes pour les utilisateurs
+    Route::prefix('users')->name('users.')->group(function () {
+        Route::get('/', [UserController::class, 'index'])->name('index');
+        Route::post('/', [UserController::class, 'store'])->name('store');
+        Route::put('/{user}', [UserController::class, 'update'])->name('update');
+        Route::delete('/{user}', [UserController::class, 'destroy'])->name('destroy');
+    });
+
+    // Routes pour les statistiques
+    Route::prefix('statistiques')->name('statistiques.')->group(function () {
+        Route::get('/', [StatistiqueController::class, 'index'])->name('index');
     });
 });
