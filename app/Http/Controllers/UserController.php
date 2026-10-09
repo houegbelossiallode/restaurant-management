@@ -56,7 +56,7 @@ class UserController extends Controller
                 'exception' => $exception::class,
             ]);
 
-            return redirect()->route('users.index')->with('error', 'Utilisateur créé, mais le courriel n’a pas été envoyé. Vérifiez la configuration SMTP Brevo dans Render.');
+            return redirect()->route('users.index')->with('error', 'Utilisateur créé, mais le courriel n’a pas été envoyé. Vérifiez les paramètres SMTP et les journaux de Render.');
         }
 
         return redirect()->route('users.index')->with('success', 'Utilisateur créé avec succès. Un email avec le mot de passe a été envoyé.');
