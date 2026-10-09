@@ -51,10 +51,10 @@ class PaiementsExport implements FromCollection, WithHeadings, WithStyles, WithC
         return $query->orderBy('date_paiement', 'desc')->get()->map(function($paiement) {
             return [
                 'date' => $paiement->date_paiement ? $paiement->date_paiement->format('d/m/Y H:i') : '-',
-                'serveuse' => $paiement->serveuse->nom,
-                'boisson' => $paiement->boisson->nom,
+                'serveuse' => $paiement->serveuse ? $paiement->serveuse->nom : '-',
+                'boisson' => $paiement->boisson ? $paiement->boisson->nom : '-',
                 'quantite' => $paiement->quantite,
-                'prix_unitaire' => $paiement->boisson->prix,
+                'prix_unitaire' => $paiement->boisson ? $paiement->boisson->prix_unitaire : 0,
                 'montant' => $paiement->montant,
             ];
         });

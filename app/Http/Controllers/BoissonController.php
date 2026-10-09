@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Boisson;
+use App\Http\Controllers\Controller;
 
 class BoissonController extends Controller
 {
@@ -59,6 +60,7 @@ class BoissonController extends Controller
         $query = $request->get('q');
         $boissons = Boisson::where('nom', 'like', '%' . $query . '%')
             ->select('id', 'nom', 'prix_unitaire')
+            ->groupBy('id', 'nom', 'prix_unitaire')
             ->limit(10)
             ->get();
         return response()->json($boissons);

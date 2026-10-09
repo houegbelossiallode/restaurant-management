@@ -8,8 +8,9 @@ use App\Models\Serveuse;
 use App\Models\Boisson;
 use App\Models\Distribution;
 use App\Exports\PaiementsExport;
+use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
-use PDF;
+use Barryvdh\DomPDF\Facade as PDF;
 
 class PaiementController extends Controller
 {
@@ -39,7 +40,7 @@ class PaiementController extends Controller
     public function create()
     {
         $serveuses = Serveuse::all();
-        $boissons = Boisson::all();
+        $boissons = Boisson::select('id', 'nom', 'prix_unitaire')->get();
         return view('paiements.create', compact('serveuses', 'boissons'));
     }
 
@@ -50,12 +51,10 @@ class PaiementController extends Controller
             'paiements' => 'required|array|min:1',
             'paiements.*.boisson_id' => 'required|exists:boissons,id',
             'paiements.*.quantite' => 'required|integer|min:1',
-            'paiements.*.montant' => 'required|numeric|min:0',
         ], [
             'paiements.required' => 'Vous devez configurer au moins un paiement.',
             'paiements.*.boisson_id.required' => 'Vous devez sélectionner une boisson pour chaque paiement.',
             'paiements.*.quantite.required' => 'La quantité est requise pour chaque paiement.',
-            'paiements.*.montant.required' => 'Le montant est requis pour chaque paiement.',
         ]);
 
         $serveuse = Serveuse::find($validated['serveuse_id']);
@@ -96,11 +95,14 @@ class PaiementController extends Controller
         }
 
         foreach ($validated['paiements'] as $paiementData) {
+            $boisson = Boisson::find($paiementData['boisson_id']);
+            $montant = $paiementData['quantite'] * $boisson->prix_unitaire;
+
             Paiement::create([
                 'serveuse_id' => $validated['serveuse_id'],
                 'boisson_id' => $paiementData['boisson_id'],
                 'quantite' => $paiementData['quantite'],
-                'montant' => $paiementData['montant'],
+                'montant' => $montant,
                 'description' => null,
                 'date_paiement' => now(),
             ]);

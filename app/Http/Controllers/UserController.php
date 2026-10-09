@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
@@ -44,10 +45,19 @@ class UserController extends Controller
         ]);
 
         // Envoyer l'email avec la vue
-        Mail::send('emails.user-created', ['user' => $user, 'password' => $password], function ($message) use ($user) {
-            $message->to($user->email)
-                ->subject('Votre compte a été créé');
-        });
+        try {
+            Mail::send('emails.user-created', ['user' => $user, 'password' => $password], function ($message) use ($user) {
+                $message->to($user->email)
+                    ->subject('Votre compte a été créé');
+            });
+        } catch (\Throwable $exception) {
+            Log::warning('Échec de l’envoi du courriel de création de compte.', [
+                'user_id' => $user->id,
+                'exception' => $exception::class,
+            ]);
+
+            return redirect()->route('users.index')->with('error', 'Utilisateur créé, mais le courriel n’a pas été envoyé. Vérifiez la configuration SMTP Brevo dans Render.');
+        }
 
         return redirect()->route('users.index')->with('success', 'Utilisateur créé avec succès. Un email avec le mot de passe a été envoyé.');
     }

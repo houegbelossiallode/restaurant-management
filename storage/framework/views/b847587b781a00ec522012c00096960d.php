@@ -1,8 +1,6 @@
-@extends('layouts.app')
+<?php $__env->startSection('title', 'Utilisateurs'); ?>
 
-@section('title', 'Utilisateurs')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="space-y-8">
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
@@ -33,39 +31,40 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-200">
-                    @foreach($users as $user)
+                    <?php $__currentLoopData = $users; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <tr class="hover:bg-slate-50 transition-colors duration-200">
-                            <td class="px-6 py-4 font-semibold text-slate-800">{{ $user->name }}</td>
-                            <td class="px-6 py-4 text-slate-600">{{ $user->email }}</td>
+                            <td class="px-6 py-4 font-semibold text-slate-800"><?php echo e($user->name); ?></td>
+                            <td class="px-6 py-4 text-slate-600"><?php echo e($user->email); ?></td>
                             <td class="px-6 py-4">
-                                @if($user->role)
+                                <?php if($user->role): ?>
                                     <span class="inline-flex items-center px-3 py-1 text-sm font-bold text-blue-600 bg-blue-50">
-                                        {{ $user->role->libelle }}
+                                        <?php echo e($user->role->libelle); ?>
+
                                     </span>
-                                @else
+                                <?php else: ?>
                                     <span class="inline-flex items-center px-3 py-1 text-sm font-bold text-slate-600 bg-slate-50">
                                         Sans rôle
                                     </span>
-                                @endif
+                                <?php endif; ?>
                             </td>
                             <td class="px-6 py-4">
                                 <div class="relative inline-block text-left">
-                                    <button onclick="toggleDropdown('dropdown-{{ $user->id }}')" class="inline-flex items-center justify-center p-2 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                                    <button onclick="toggleDropdown('dropdown-<?php echo e($user->id); ?>')" class="inline-flex items-center justify-center p-2 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
                                         </svg>
                                     </button>
-                                    <div id="dropdown-{{ $user->id }}" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-slate-200 z-10">
+                                    <div id="dropdown-<?php echo e($user->id); ?>" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-slate-200 z-10">
                                         <div class="py-1">
-                                            <button onclick="editUser({{ $user->id }}, '{{ $user->name }}', '{{ $user->email }}', {{ $user->role_id ?? 'null' }})" class="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors flex items-center gap-2">
+                                            <button onclick="editUser(<?php echo e($user->id); ?>, '<?php echo e($user->name); ?>', '<?php echo e($user->email); ?>', <?php echo e($user->role_id ?? 'null'); ?>)" class="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors flex items-center gap-2">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                                                 </svg>
                                                 Modifier
                                             </button>
-                                            <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="w-full">
-                                                @csrf
-                                                @method('DELETE')
+                                            <form action="<?php echo e(route('users.destroy', $user->id)); ?>" method="POST" class="w-full">
+                                                <?php echo csrf_field(); ?>
+                                                <?php echo method_field('DELETE'); ?>
                                                 <button type="submit" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors flex items-center gap-2" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur?')">
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
@@ -78,7 +77,7 @@
                                 </div>
                             </td>
                         </tr>
-                    @endforeach
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </tbody>
             </table>
         </div>
@@ -95,8 +94,8 @@
                     </svg>
                 </button>
             </div>
-            <form id="userForm" action="{{ route('users.store') }}" method="POST" class="space-y-6 p-4 sm:p-6">
-                @csrf
+            <form id="userForm" action="<?php echo e(route('users.store')); ?>" method="POST" class="space-y-6 p-4 sm:p-6">
+                <?php echo csrf_field(); ?>
                 <input type="hidden" id="userId" name="id" value="">
                 <div id="methodField"></div>
                 <div>
@@ -111,9 +110,9 @@
                     <label class="block text-slate-700 text-sm font-semibold mb-2">Rôle</label>
                     <select id="role_id" name="role_id" required class="w-full px-4 py-3 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 rounded-lg">
                         <option value="">Sélectionnez un rôle</option>
-                        @foreach(\App\Models\Role::all() as $role)
-                            <option value="{{ $role->id }}">{{ $role->libelle }}</option>
-                        @endforeach
+                        <?php $__currentLoopData = \App\Models\Role::all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $role): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <option value="<?php echo e($role->id); ?>"><?php echo e($role->libelle); ?></option>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </select>
                 </div>
                 <div class="flex flex-col-reverse gap-3 pt-4 sm:flex-row">
@@ -145,7 +144,7 @@
         document.getElementById('userModal').classList.remove('hidden');
         document.getElementById('userModal').classList.add('flex');
         document.getElementById('modalTitle').textContent = 'Ajouter un Utilisateur';
-        document.getElementById('userForm').action = '{{ route('users.store') }}';
+        document.getElementById('userForm').action = '<?php echo e(route('users.store')); ?>';
         document.getElementById('userId').value = '';
         document.getElementById('methodField').innerHTML = '';
         document.getElementById('name').value = '';
@@ -162,7 +161,7 @@
         document.getElementById('userModal').classList.remove('hidden');
         document.getElementById('userModal').classList.add('flex');
         document.getElementById('modalTitle').textContent = 'Modifier un Utilisateur';
-        document.getElementById('userForm').action = '{{ route('users.update', ':id') }}'.replace(':id', id);
+        document.getElementById('userForm').action = '<?php echo e(route('users.update', ':id')); ?>'.replace(':id', id);
         document.getElementById('userId').value = id;
         document.getElementById('methodField').innerHTML = '<input type="hidden" name="_method" value="PUT">';
         document.getElementById('name').value = name;
@@ -194,4 +193,6 @@
         });
     });
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\HP 450 G7\CascadeProjects\restaurant-management\resources\views/users/index.blade.php ENDPATH**/ ?>

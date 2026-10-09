@@ -87,6 +87,8 @@
 
 <script>
     let distributionCount = 0;
+    const serveusesDisponibles = @json($serveuses);
+    const boissonsDisponibles = @json($boissons);
 
     function addDistributionRow() {
         distributionCount++;
@@ -177,58 +179,41 @@
         const serveuseSearch = document.getElementById('serveuseSearch');
         const serveuseSuggestions = document.getElementById('serveuseSuggestions');
         const serveuseIdInput = document.getElementById('serveuse_id');
-        let debounceTimer;
-        let isFetching = false;
 
         serveuseSearch.addEventListener('input', function() {
-            clearTimeout(debounceTimer);
-            const query = this.value.trim();
+            const query = this.value.trim().toLocaleLowerCase();
+            serveuseSuggestions.innerHTML = '';
 
             if (query.length < 2) {
                 serveuseSuggestions.classList.add('hidden');
                 return;
             }
 
-            debounceTimer = setTimeout(() => {
-                if (isFetching) return;
-                isFetching = true;
+            const matchingServeuses = serveusesDisponibles
+                .filter(item => item.nom.trim().toLocaleLowerCase().includes(query))
+                .sort((a, b) => {
+                    const aStartsWithQuery = a.nom.trim().toLocaleLowerCase().startsWith(query);
+                    const bStartsWithQuery = b.nom.trim().toLocaleLowerCase().startsWith(query);
+                    return Number(bStartsWithQuery) - Number(aStartsWithQuery);
+                })
+                .slice(0, 10);
 
-                fetch('/api/serveuses/search?q=' + encodeURIComponent(query))
-                    .then(response => response.json())
-                    .then(data => {
-                        serveuseSuggestions.innerHTML = '';
-                        serveuseSuggestions.classList.remove('hidden');
-
-                        const uniqueData = new Map();
-                        data.forEach(item => {
-                            const key = item.nom.toLowerCase().trim() + '|' + item.id;
-                            if (!uniqueData.has(key)) {
-                                uniqueData.set(key, item);
-                            }
-                        });
-
-                        if (uniqueData.size === 0) {
-                            serveuseSuggestions.innerHTML = '<div class="px-4 py-2 text-slate-500 text-sm">Aucun résultat</div>';
-                        } else {
-                            uniqueData.forEach(item => {
-                                const div = document.createElement('div');
-                                div.className = 'px-4 py-2 hover:bg-slate-100 cursor-pointer text-sm';
-                                div.textContent = item.nom;
-                                div.addEventListener('click', function() {
-                                    serveuseSearch.value = item.nom;
-                                    serveuseIdInput.value = item.id;
-                                    serveuseSuggestions.classList.add('hidden');
-                                });
-                                serveuseSuggestions.appendChild(div);
-                            });
-                        }
-                        isFetching = false;
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        isFetching = false;
+            if (matchingServeuses.length === 0) {
+                serveuseSuggestions.innerHTML = '<div class="px-4 py-2 text-slate-500 text-sm">Aucun résultat</div>';
+            } else {
+                matchingServeuses.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'px-4 py-2 hover:bg-slate-100 cursor-pointer text-sm';
+                    div.textContent = item.nom;
+                    div.addEventListener('click', function() {
+                        serveuseSearch.value = item.nom;
+                        serveuseIdInput.value = item.id;
+                        serveuseSuggestions.classList.add('hidden');
                     });
-            }, 300);
+                    serveuseSuggestions.appendChild(div);
+                });
+            }
+            serveuseSuggestions.classList.remove('hidden');
         });
     }
 
@@ -237,59 +222,50 @@
         const boissonSearch = document.getElementById('boissonSearch_' + rowId);
         const boissonSuggestions = document.getElementById('boissonSuggestions_' + rowId);
         const boissonIdInput = document.getElementById('boisson_id_' + rowId);
-        let debounceTimer;
-        let isFetching = false;
 
         boissonSearch.addEventListener('input', function() {
-            clearTimeout(debounceTimer);
-            const query = this.value.trim();
+            const query = this.value.trim().toLocaleLowerCase();
+            boissonSuggestions.innerHTML = '';
 
             if (query.length < 2) {
                 boissonSuggestions.classList.add('hidden');
                 return;
             }
 
-            debounceTimer = setTimeout(() => {
-                if (isFetching) return;
-                isFetching = true;
+            const matchingBoissons = [];
+            const seenBoissons = new Set();
+            boissonsDisponibles.forEach(item => {
+                const nom = item.nom.trim();
+                const normalizedNom = nom.toLocaleLowerCase();
+                if (normalizedNom.includes(query) && !seenBoissons.has(normalizedNom)) {
+                    seenBoissons.add(normalizedNom);
+                    matchingBoissons.push(item);
+                }
+            });
 
-                fetch('/api/boissons/search?q=' + encodeURIComponent(query))
-                    .then(response => response.json())
-                    .then(data => {
-                        boissonSuggestions.innerHTML = '';
-                        boissonSuggestions.classList.remove('hidden');
+            matchingBoissons.sort((a, b) => {
+                const aStartsWithQuery = a.nom.trim().toLocaleLowerCase().startsWith(query);
+                const bStartsWithQuery = b.nom.trim().toLocaleLowerCase().startsWith(query);
+                return Number(bStartsWithQuery) - Number(aStartsWithQuery);
+            });
 
-                        const uniqueData = new Map();
-                        data.forEach(item => {
-                            const key = item.nom.toLowerCase().trim() + '|' + item.id;
-                            if (!uniqueData.has(key)) {
-                                uniqueData.set(key, item);
-                            }
-                        });
-
-                        if (uniqueData.size === 0) {
-                            boissonSuggestions.innerHTML = '<div class="px-4 py-2 text-slate-500 text-sm">Aucun résultat</div>';
-                        } else {
-                            uniqueData.forEach(item => {
-                                const div = document.createElement('div');
-                                div.className = 'px-4 py-2 hover:bg-slate-100 cursor-pointer text-sm';
-                                div.textContent = item.nom + ' (' + number_format(item.prix_unitaire, 0) + ' FCFA)';
-                                div.addEventListener('click', function() {
-                                    boissonSearch.value = item.nom;
-                                    boissonIdInput.value = item.id;
-                                    boissonSuggestions.classList.add('hidden');
-                                    updateSummary();
-                                });
-                                boissonSuggestions.appendChild(div);
-                            });
-                        }
-                        isFetching = false;
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        isFetching = false;
+            if (matchingBoissons.length === 0) {
+                boissonSuggestions.innerHTML = '<div class="px-4 py-2 text-slate-500 text-sm">Aucun résultat</div>';
+            } else {
+                matchingBoissons.slice(0, 10).forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'px-4 py-2 hover:bg-slate-100 cursor-pointer text-sm';
+                    div.textContent = item.nom + ' (' + number_format(item.prix_unitaire, 0) + ' FCFA)';
+                    div.addEventListener('click', function() {
+                        boissonSearch.value = item.nom;
+                        boissonIdInput.value = item.id;
+                        boissonSuggestions.classList.add('hidden');
+                        updateSummary();
                     });
-            }, 300);
+                    boissonSuggestions.appendChild(div);
+                });
+            }
+            boissonSuggestions.classList.remove('hidden');
         });
     }
 

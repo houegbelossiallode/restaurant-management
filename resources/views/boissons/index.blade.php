@@ -18,7 +18,7 @@
     </div>
 
     <!-- Stats Cards -->
-    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:gap-6 xl:grid-cols-3">
+    {{-- <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:gap-6 xl:grid-cols-3">
         <div class="bg-white shadow-xl border border-slate-100 p-4 hover:shadow-2xl transition-all duration-300">
             <div class="flex items-center justify-between mb-4">
                 <div>
@@ -63,29 +63,7 @@
                 <div class="flex-1 bg-amber-400 rounded-t" style="height: 60%"></div>
             </div>
         </div>
-        <div class="bg-white shadow-xl border border-slate-100 p-4 hover:shadow-2xl transition-all duration-300">
-            <div class="flex items-center justify-between mb-4">
-                <div>
-                    <p class="text-slate-500 text-xs font-medium mb-1">Stock Faible</p>
-                    <p class="text-2xl font-bold bg-gradient-to-r from-red-600 to-rose-600 bg-clip-text text-transparent">{{ $boissons->where('stock_actuel', '<', 10)->count() }}</p>
-                </div>
-                <div class="w-10 h-10 bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center shadow-lg">
-                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
-                    </svg>
-                </div>
-            </div>
-            <div class="h-12 flex items-end space-x-1">
-                <div class="flex-1 bg-red-200 rounded-t" style="height: 20%"></div>
-                <div class="flex-1 bg-red-300 rounded-t" style="height: 30%"></div>
-                <div class="flex-1 bg-red-400 rounded-t" style="height: 40%"></div>
-                <div class="flex-1 bg-red-500 rounded-t" style="height: 50%"></div>
-                <div class="flex-1 bg-red-600 rounded-t" style="height: 40%"></div>
-                <div class="flex-1 bg-red-500 rounded-t" style="height: 30%"></div>
-                <div class="flex-1 bg-red-400 rounded-t" style="height: 20%"></div>
-            </div>
-        </div>
-    </div>
+    </div> --}}
 
     <!-- Premium Table -->
     <div class="bg-white shadow-2xl border border-slate-200 overflow-hidden">
@@ -98,7 +76,6 @@
                     <tr>
                         <th class="px-6 py-4 text-left text-xs font-bold text-slate-700 uppercase tracking-wider border-b-2 border-slate-300">Boisson</th>
                         <th class="px-6 py-4 text-left text-xs font-bold text-slate-700 uppercase tracking-wider border-b-2 border-slate-300">Prix Unitaire</th>
-                        <th class="px-6 py-4 text-left text-xs font-bold text-slate-700 uppercase tracking-wider border-b-2 border-slate-300">Stock Actuel</th>
                         <th class="px-6 py-4 text-left text-xs font-bold text-slate-700 uppercase tracking-wider border-b-2 border-slate-300">Actions</th>
                     </tr>
                 </thead>
@@ -120,11 +97,6 @@
                                     {{ number_format($boisson->prix_unitaire, 0) }} FCFA
                                 </span>
                             </td>
-                            <td class="px-6 py-4">
-                                <span class="inline-flex items-center px-3 py-1 text-sm font-bold {{ $boisson->stock_actuel > 10 ? 'text-emerald-600 bg-emerald-50' : 'text-amber-600 bg-amber-50' }}">
-                                    {{ $boisson->stock_actuel }} unités
-                                </span>
-                            </td>
                             <td class="px-6 py-4 relative">
                                 <div class="relative">
                                     <button onclick="toggleDropdown({{ $boisson->id }})" class="p-2 hover:bg-slate-100 rounded transition-colors">
@@ -134,7 +106,7 @@
                                     </button>
                                     <div id="dropdown-{{ $boisson->id }}" class="hidden bg-white shadow-xl border border-slate-200 rounded-lg z-[100] w-48">
                                         <div class="py-1">
-                                            <button onclick="editBoisson({{ $boisson->id }}, '{{ $boisson->nom }}', {{ $boisson->prix_unitaire }}, {{ $boisson->stock_actuel }})" class="block w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">Modifier</button>
+                                            <button onclick="editBoisson({{ $boisson->id }}, '{{ $boisson->nom }}', {{ $boisson->prix_unitaire }})" class="block w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">Modifier</button>
                                             <form action="{{ route('boissons.destroy', $boisson->id) }}" method="POST">
                                                 @csrf
                                                 @method('DELETE')
@@ -174,10 +146,6 @@
                     <label class="block text-slate-700 text-sm font-semibold mb-2">Prix unitaire (FCFA)</label>
                     <input type="number" id="prix_unitaire" name="prix_unitaire" required min="0" class="w-full px-4 py-3 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" placeholder="Entrez le prix">
                 </div>
-                <div>
-                    <label class="block text-slate-700 text-sm font-semibold mb-2">Stock actuel</label>
-                    <input type="number" id="stock_actuel" name="stock_actuel" required min="0" class="w-full px-4 py-3 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" placeholder="Entrez le stock">
-                </div>
                 <div class="flex flex-col-reverse gap-3 pt-4 sm:flex-row">
                     <button type="submit" class="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 font-semibold hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
                         Enregistrer
@@ -200,7 +168,6 @@
             document.getElementById('isEdit').value = '';
             document.getElementById('nom').value = '';
             document.getElementById('prix_unitaire').value = '';
-            document.getElementById('stock_actuel').value = '';
         }
 
         function closeModal() {
@@ -208,7 +175,7 @@
             document.getElementById('boissonModal').classList.remove('flex');
         }
 
-        function editBoisson(id, nom, prix_unitaire, stock_actuel) {
+        function editBoisson(id, nom, prix_unitaire) {
             document.getElementById('boissonModal').classList.remove('hidden');
             document.getElementById('boissonModal').classList.add('flex');
             document.getElementById('modalTitle').textContent = 'Modifier une Boisson';
@@ -217,7 +184,6 @@
             document.getElementById('isEdit').value = 'PUT';
             document.getElementById('nom').value = nom;
             document.getElementById('prix_unitaire').value = prix_unitaire;
-            document.getElementById('stock_actuel').value = stock_actuel;
         }
 
         function toggleDropdown(id) {
@@ -247,12 +213,15 @@
             }
         });
 
-        // Close dropdowns when clicking outside
+        // Fermer les dropdowns quand on clique en dehors
         document.addEventListener('click', function(e) {
             const dropdowns = document.querySelectorAll('[id^="dropdown-"]');
-            dropdowns.forEach(function(dropdown) {
-                if (!dropdown.contains(e.target) && !e.target.closest('button')) {
-                    dropdown.classList.add('hidden');
+            dropdowns.forEach(dropdown => {
+                if (!dropdown.classList.contains('hidden')) {
+                    const button = dropdown.previousElementSibling;
+                    if (!dropdown.contains(e.target) && !button.contains(e.target)) {
+                        dropdown.classList.add('hidden');
+                    }
                 }
             });
         });

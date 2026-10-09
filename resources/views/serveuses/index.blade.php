@@ -260,8 +260,14 @@
         }
 
         function toggleDropdown(id) {
+            // Fermer tous les dropdowns d'abord
+            document.querySelectorAll('[id^="dropdown-"]').forEach(dropdown => {
+                dropdown.classList.add('hidden');
+            });
+
+            // Ouvrir le dropdown cliqué
             const dropdown = document.getElementById('dropdown-' + id);
-            dropdown.classList.toggle('hidden');
+            dropdown.classList.remove('hidden');
         }
 
         // Close modal when clicking outside
@@ -271,13 +277,17 @@
             }
         });
 
-        // Close dropdowns when clicking outside
+        // Fermer les dropdowns quand on clique en dehors
         document.addEventListener('click', function(e) {
-            if (!e.target.closest('.relative')) {
-                document.querySelectorAll('[id^="dropdown-"]').forEach(function(dropdown) {
-                    dropdown.classList.add('hidden');
-                });
-            }
+            const dropdowns = document.querySelectorAll('[id^="dropdown-"]');
+            dropdowns.forEach(dropdown => {
+                if (!dropdown.classList.contains('hidden')) {
+                    const button = dropdown.previousElementSibling;
+                    if (!dropdown.contains(e.target) && !button.contains(e.target)) {
+                        dropdown.classList.add('hidden');
+                    }
+                }
+            });
         });
     </script>
 </div>

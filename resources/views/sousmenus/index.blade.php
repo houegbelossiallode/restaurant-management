@@ -141,12 +141,14 @@
 
     <script>
         function toggleDropdown(id) {
-            const dropdown = document.getElementById(id);
-            if (dropdown.classList.contains('hidden')) {
-                dropdown.classList.remove('hidden');
-            } else {
+            // Fermer tous les dropdowns d'abord
+            document.querySelectorAll('[id^="dropdown-"]').forEach(dropdown => {
                 dropdown.classList.add('hidden');
-            }
+            });
+
+            // Ouvrir le dropdown cliqué
+            const dropdown = document.getElementById(id);
+            dropdown.classList.remove('hidden');
         }
 
         function openModal() {
@@ -189,6 +191,19 @@
                     }
                 });
             }
+        });
+
+        // Fermer les dropdowns quand on clique en dehors
+        document.addEventListener('click', function(e) {
+            const dropdowns = document.querySelectorAll('[id^="dropdown-"]');
+            dropdowns.forEach(dropdown => {
+                if (!dropdown.classList.contains('hidden')) {
+                    const button = dropdown.previousElementSibling;
+                    if (!dropdown.contains(e.target) && !button.contains(e.target)) {
+                        dropdown.classList.add('hidden');
+                    }
+                }
+            });
         });
     </script>
 </div>

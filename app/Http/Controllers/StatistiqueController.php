@@ -14,20 +14,21 @@ class StatistiqueController extends Controller
     {
         // Statistiques générales
         $totalBoissons = Boisson::count();
-        $totalDistributions = Distribution::sum('montant_total');
-        $totalPaiements = Paiement::sum('montant');
+        $totalDistributions = Distribution::where('date_distribution', '>=', now()->subMonth())->sum('montant_total');
+        $totalPaiements = Paiement::where('date_paiement', '>=', now()->subMonth())->sum('montant');
         $totalServeuses = Serveuse::count();
 
         // Données pour le graphique des boissons les plus distribuées
-        $boissonsStats = Distribution::with('boisson')
-            ->selectRaw('boisson_id, SUM(quantite) as total_quantite, SUM(montant_total) as total_montant')
+        $boissonsStats = Distribution::selectRaw('boisson_id, SUM(quantite) as total_quantite, SUM(montant_total) as total_montant')
+            ->where('date_distribution', '>=', now()->subMonth())
             ->groupBy('boisson_id')
             ->orderByDesc('total_quantite')
-            ->limit(10)
+            ->limit(5)
             ->get()
             ->map(function ($item) {
+                $boisson = Boisson::find($item->boisson_id);
                 return [
-                    'nom' => $item->boisson->nom ?? 'Inconnu',
+                    'nom' => $boisson ? $boisson->nom : 'Inconnu',
                     'quantite' => $item->total_quantite,
                     'montant' => $item->total_montant,
                 ];
@@ -35,20 +36,22 @@ class StatistiqueController extends Controller
 
         // Données pour le graphique des paiements par mois
         $paiementsParMois = Paiement::selectRaw('DATE_FORMAT(date_paiement, "%Y-%m") as mois, SUM(montant) as total')
-            ->where('date_paiement', '>=', now()->subMonths(6))
+            ->where('date_paiement', '>=', now()->subMonth())
             ->groupBy('mois')
             ->orderBy('mois')
             ->get();
 
         // Données pour le graphique des distributions par serveuse
-        $distributionsParServeuse = Distribution::with('serveuse')
-            ->selectRaw('serveuse_id, SUM(montant_total) as total_montant, COUNT(*) as nb_distributions')
+        $distributionsParServeuse = Distribution::selectRaw('serveuse_id, SUM(montant_total) as total_montant, COUNT(*) as nb_distributions')
+            ->where('date_distribution', '>=', now()->subMonth())
             ->groupBy('serveuse_id')
             ->orderByDesc('total_montant')
+            ->limit(5)
             ->get()
             ->map(function ($item) {
+                $serveuse = Serveuse::find($item->serveuse_id);
                 return [
-                    'nom' => $item->serveuse->nom ?? 'Inconnu',
+                    'nom' => $serveuse ? $serveuse->nom : 'Inconnu',
                     'montant' => $item->total_montant,
                     'nb_distributions' => $item->nb_distributions,
                 ];
@@ -56,7 +59,7 @@ class StatistiqueController extends Controller
 
         // Données pour le graphique comparatif distributions vs paiements
         $comparatif = [];
-        for ($i = 5; $i >= 0; $i--) {
+        for ($i = 0; $i >= 0; $i--) {
             $mois = now()->subMonths($i)->format('Y-m');
             $dist = Distribution::whereRaw('DATE_FORMAT(date_distribution, "%Y-%m") = ?', [$mois])->sum('montant_total');
             $pai = Paiement::whereRaw('DATE_FORMAT(date_paiement, "%Y-%m") = ?', [$mois])->sum('montant');

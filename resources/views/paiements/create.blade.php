@@ -87,6 +87,7 @@
 
 <script>
     let paiementCount = 0;
+    const boissonsDisponibles = @json($boissons);
 
     function addPaiementRow() {
         paiementCount++;
@@ -103,22 +104,19 @@
                     </svg>
                 </button>
             </div>
-            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
                     <label class="block text-slate-700 text-xs font-semibold mb-1">Boisson</label>
                     <div class="relative">
                         <input type="text" id="boissonSearch_${paiementCount}" name="boisson_search_${paiementCount}" class="w-full px-3 py-2 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200 text-sm" placeholder="Rechercher une boisson" autocomplete="off" oninput="updateSummary()">
                         <input type="hidden" id="boisson_id_${paiementCount}" name="paiements[${paiementCount}][boisson_id]">
+                        <input type="hidden" id="boisson_prix_${paiementCount}" name="boisson_prix_${paiementCount}">
                         <div id="boissonSuggestions_${paiementCount}" class="absolute z-[10000] w-full bg-white border border-slate-200 shadow-xl mt-1 hidden max-h-48 overflow-y-auto"></div>
                     </div>
                 </div>
                 <div>
                     <label class="block text-slate-700 text-xs font-semibold mb-1">Quantité</label>
                     <input type="number" id="quantite_${paiementCount}" name="paiements[${paiementCount}][quantite]" value="1" min="1" required class="w-full px-3 py-2 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200 text-sm" placeholder="Qté" oninput="updateSummary()">
-                </div>
-                <div>
-                    <label class="block text-slate-700 text-xs font-semibold mb-1">Montant (FCFA)</label>
-                    <input type="number" id="montant_${paiementCount}" name="paiements[${paiementCount}][montant]" required class="w-full px-3 py-2 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200 text-sm" placeholder="Montant" oninput="updateSummary()">
                 </div>
             </div>
         `;
@@ -153,16 +151,16 @@
             const rowId = row.id.replace('paiementRow', '');
             const boissonSearch = document.getElementById('boissonSearch_' + rowId);
             const quantite = document.getElementById('quantite_' + rowId);
-            const montant = document.getElementById('montant_' + rowId);
+            const boissonPrix = document.getElementById('boisson_prix_' + rowId);
 
             const boissonNom = boissonSearch ? boissonSearch.value : 'Non défini';
             const qty = quantite ? parseInt(quantite.value) || 0 : 0;
-            const amount = montant ? parseFloat(montant.value) || 0 : 0;
-            const lineTotal = qty * amount;
+            const prix = boissonPrix ? parseFloat(boissonPrix.value) || 0 : 0;
+            const lineTotal = qty * prix;
 
-            if (boissonNom || qty > 0 || amount > 0) {
+            if (boissonNom || qty > 0) {
                 summaryHTML += `<div class="flex justify-between text-sm text-slate-700">
-                    <span>${boissonNom || 'Boisson'} x${qty}</span>
+                    <span>${boissonNom || 'Boisson'} x${qty} (${prix.toLocaleString()} FCFA/u)</span>
                     <span>${lineTotal.toLocaleString()} FCFA</span>
                 </div>`;
                 total += lineTotal;
@@ -186,45 +184,48 @@
 
         boissonSearch.addEventListener('input', function(e) {
             const query = e.target.value;
+            const normalizedQuery = query.trim().toLocaleLowerCase();
             suggestions.innerHTML = '';
             suggestions.classList.add('hidden');
 
-            if (query.length < 2) {
+            if (normalizedQuery.length < 2) {
                 return;
             }
 
-            fetch(`/api/boissons/search?q=${encodeURIComponent(query)}`)
-                .then(response => response.json())
-                .then(data => {
-                    const uniqueData = [];
-                    const seen = new Set();
-                    data.forEach(b => {
-                        const nom = b.nom ? b.nom.trim() : '';
-                        if (nom && !seen.has(nom)) {
-                            seen.add(nom);
-                            uniqueData.push(b);
-                        }
-                    });
+            const uniqueData = [];
+            const seen = new Set();
+            boissonsDisponibles.forEach(b => {
+                const nom = b.nom ? b.nom.trim() : '';
+                const normalizedNom = nom.toLocaleLowerCase();
+                if (nom && normalizedNom.includes(normalizedQuery) && !seen.has(normalizedNom)) {
+                    seen.add(normalizedNom);
+                    uniqueData.push(b);
+                }
+            });
 
-                    if (uniqueData.length > 0) {
-                        uniqueData.forEach(b => {
-                            const div = document.createElement('div');
-                            div.className = 'px-3 py-2 hover:bg-slate-50 cursor-pointer text-sm text-slate-700 border-b border-slate-100 last:border-b-0';
-                            div.innerHTML = `<div class="flex justify-between items-center"><span class="font-medium">${b.nom}</span><span class="text-xs text-slate-500">${(b.prix_unitaire || 0).toLocaleString()} FCFA</span></div>`;
-                            div.onclick = function() {
-                                document.getElementById('boissonSearch_' + id).value = b.nom;
-                                document.getElementById('boisson_id_' + id).value = b.id;
-                                suggestions.classList.add('hidden');
-                                updateSummary();
-                            };
-                            suggestions.appendChild(div);
-                        });
-                        suggestions.classList.remove('hidden');
-                    } else {
-                        suggestions.classList.add('hidden');
-                    }
-                })
-                .catch(error => console.error('Error:', error));
+            uniqueData.sort((a, b) => {
+                const aStartsWithQuery = a.nom.trim().toLocaleLowerCase().startsWith(normalizedQuery);
+                const bStartsWithQuery = b.nom.trim().toLocaleLowerCase().startsWith(normalizedQuery);
+                return Number(bStartsWithQuery) - Number(aStartsWithQuery);
+            });
+
+            uniqueData.slice(0, 10).forEach(b => {
+                const div = document.createElement('div');
+                div.className = 'px-3 py-2 hover:bg-slate-50 cursor-pointer text-sm text-slate-700 border-b border-slate-100 last:border-b-0';
+                div.innerHTML = `<div class="flex justify-between items-center"><span class="font-medium">${b.nom}</span><span class="text-xs text-slate-500">${(b.prix_unitaire || 0).toLocaleString()} FCFA</span></div>`;
+                div.onclick = function() {
+                    document.getElementById('boissonSearch_' + id).value = b.nom;
+                    document.getElementById('boisson_id_' + id).value = b.id;
+                    document.getElementById('boisson_prix_' + id).value = b.prix_unitaire || 0;
+                    suggestions.classList.add('hidden');
+                    updateSummary();
+                };
+                suggestions.appendChild(div);
+            });
+
+            if (uniqueData.length > 0) {
+                suggestions.classList.remove('hidden');
+            }
         });
     }
 

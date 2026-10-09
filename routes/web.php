@@ -34,11 +34,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/', [ServeuseController::class, 'index'])->name('index');
         Route::get('/create', [ServeuseController::class, 'create'])->name('create');
         Route::post('/', [ServeuseController::class, 'store'])->name('store');
+        Route::get('/dettes', [ServeuseController::class, 'dettes'])->name('dettes');
         Route::get('/{serveuse}', [ServeuseController::class, 'show'])->name('show');
         Route::get('/{serveuse}/edit', [ServeuseController::class, 'edit'])->name('edit');
         Route::put('/{serveuse}', [ServeuseController::class, 'update'])->name('update');
         Route::delete('/{serveuse}', [ServeuseController::class, 'destroy'])->name('destroy');
-        Route::get('/dettes', [ServeuseController::class, 'dettes'])->name('dettes');
     });
 
     // Routes pour les boissons
@@ -53,6 +53,9 @@ Route::middleware(['auth'])->group(function () {
 
     // Routes pour les distributions
     Route::prefix('distributions')->name('distributions.')->group(function () {
+        Route::get('/', [DistributionController::class, 'index'])->name('index');
+        Route::get('/export/excel', [DistributionController::class, 'exportExcel'])->name('export.excel');
+        Route::get('/export/pdf', [DistributionController::class, 'exportPdf'])->name('export.pdf');
         Route::get('/create', [DistributionController::class, 'create'])->name('create');
         Route::post('/', [DistributionController::class, 'store'])->name('store');
     });

@@ -78,13 +78,24 @@ class ServeuseController extends Controller
         return response()->json($serveuses);
     }
 
-    public function dettes()
+    public function dettes(Request $request)
     {
-        $serveuses = Serveuse::with(['distributions' => function($q) {
-            $q->with('boisson')->orderBy('date_distribution', 'desc');
-        }, 'paiements' => function($q) {
-            $q->with('boisson')->orderBy('date_paiement', 'desc');
-        }])->get();
+        $sixMonthsAgo = now()->subMonths(6);
+
+        $query = Serveuse::select('serveuses.*')
+            ->selectRaw('COALESCE((SELECT SUM(montant_total) FROM distributions WHERE serveuse_id = serveuses.id AND date_distribution >= ?), 0) as total_distributions', [$sixMonthsAgo])
+            ->selectRaw('COALESCE((SELECT SUM(montant) FROM paiements WHERE serveuse_id = serveuses.id AND date_paiement >= ?), 0) as total_paiements', [$sixMonthsAgo]);
+
+        if ($request->filled('search')) {
+            $query->where('nom', 'like', '%' . trim($request->search) . '%');
+        }
+
+        $serveuses = $query->orderBy('nom')
+            ->get()
+            ->map(function ($serveuse) {
+                $serveuse->solde = $serveuse->total_distributions - $serveuse->total_paiements;
+                return $serveuse;
+            });
 
         return view('serveuses.dettes', compact('serveuses'));
     }
